@@ -1,21 +1,22 @@
 
 var GrovePi = require('node-grovepi').GrovePi;
 
-var Commands = GrovePi.commands
-var Board = GrovePi.board
+var Commands = GrovePi.commands;
+var Board = GrovePi.board;
 
-var Digital = GrovePi.sensors.base.Digital
+var Digital = GrovePi.sensors.base.Digital;
 
 module.exports = function(RED) {
     var board = new Board({
          debug: true,
          onError: function(err){
            console.error('GrovePiBoard.js: Something went wrong');
-           console.error(err)
+           console.error(err);
          },
          onInit: function(res) {
          }
     });
+  };
 
     board.init();
 
@@ -38,12 +39,12 @@ module.exports = function(RED) {
         var interval = setInterval(function() {
             var value;
 
-            var writeRet = board.writeBytes(Commands.dRead.concat([node.pin, Commands.unused, Commands.unused]))
+            var writeRet = board.writeBytes(Commands.dRead.concat([node.pin, Commands.unused, Commands.unused]));
             if (writeRet) {
-                board.wait(100)
-                value = board.readByte()[0]
+                board.wait(100);
+                value = board.readByte()[0];
             } else {
-                value = false
+                value = false;
             }
 
             if(typeof value !== 'undefined' && value !== false && value !== oldVal) {
