@@ -1,0 +1,47 @@
+<script type="text/javascript">
+    RED.nodes.registerType('grovepi-infrared',{
+        category: 'inputs',
+        color:"#c6dbef",
+        defaults: {
+            name: { value:"" },
+            pin: { value:"",required:true,validate:RED.validators.number() },
+        },
+        inputs:0,
+        outputs:1,
+        icon: "rpi.png",
+        label: function() {
+            return this.name||"Pin: "+this.pin ;
+        },
+        paletteLabel: 'infrared',
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="grovepi-infrared">
+    <div class="form-row">
+        <label for="node-input-pin"><i class="fa fa-circle"></i> <span>Port</span></label>
+        <select type="text" id="node-input-pin" style="width: 250px;">
+            <option value="2">Digital 2</option>
+            <option value="3">Digital 3</option>
+            <option value="4">Digital 4</option>
+            <option value="5">Digital 5</option>
+            <option value="6">Digital 6</option>
+            <option value="7">Digital 7</option>
+            <option value="8">Digital 8</option>
+         </select>
+         &nbsp;<span id="pitype"></span>
+    </div>
+    <br/>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span>Name</span></label>
+        <input type="text" id="node-input-name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="grovepi-infrared">
+    <p>Raspberry Pi GrovePi Button Sensor node.</p>
+    <p>Will read the data from the selected digital port.</p>
+    <p><b>Note:</b> we are using the actual physical port numbers on the GrovePi card as they are easier to locate.</p>
+</script>
