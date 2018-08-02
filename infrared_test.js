@@ -1,10 +1,8 @@
 
 var GrovePi = require('node-grovepi').GrovePi;
-
 var Commands = GrovePi.commands;
-var Board = GrovePi.board;
-
-var Digital = GrovePi.sensors.base.Digital;
+var Board = GrovePi.board
+var Digital = GrovePi.sensors.base.Digital
 
 module.exports = function(RED) {
     var board = new Board({
@@ -20,12 +18,6 @@ module.exports = function(RED) {
 
     board.init();
 
-    var fs =  require('fs');
-
-    if (!fs.existsSync("/dev/ttyAMA0")) { // unlikely if not on a Pi
-        throw "Info : Node ignored because /dev/ttyAMA0 doesn't exist.";
-    }
-
     function infrared(n) {
         RED.nodes.createNode(this,n);
         this.pin = n.pin;
@@ -35,25 +27,18 @@ module.exports = function(RED) {
         var digital = new Digital(node.pin);
         board.pinMode(node.pin, 'input');
 
-        var oldVal;
-        var interval = setInterval(function() {
-            var value;
 
-            var writeRet = board.writeBytes(Commands.dRead.concat([node.pin, Commands.unused, Commands.unused]));
-            if (writeRet) {
-                board.wait(100);
-                value = board.readByte()[0];
-            } else {
-                value = false;
-            }
+        function inputlistener(msg){
+          var out = Number(msg.payload);
 
-            if(typeof value !== 'undefined' && value !== false && value !== oldVal) {
-                node.send({ topic:"pi/"+node.pin, payload:value });
-                node.buttonState = value;
-                node.status({fill:"green",shape:"dot",text:value.toString()});
-                oldVal = value;
-            }
-        }, 100);
+          if(out == 0){
+            msg.payload = "true";
+          }else{
+            msg.payload = "false";
+          }
+          node.send(msg);
+        }
+        //var oldVal;
 
         node.on('close', function() {
             node.status({fill:"grey",shape:"ring",text:"Closed"});
@@ -63,6 +48,6 @@ module.exports = function(RED) {
             clearInterval(interval);
         });
 
-        RED.nodes.registerType("grovepi-infrared",Button);
+        RED.nodes.registerType("grovepi-infrared",infrared);
 
   }
